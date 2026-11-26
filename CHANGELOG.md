@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Terminals that support OSC 7577 can now resume jiru after a restart, reopening it with the same profile and issue
+
+### Changed
+
+- Opening an issue directly now takes `--key`/`-k` (`jiru -k PROJ-123`); the positional form (`jiru PROJ-123`) is no longer accepted
+
+## [0.3.18] — 2026-06-16
+
+### Added
+
 - The home screen can now show the whole project. When a profile has no board configured (choose None in the setup wizard's board step), the home loads the project's open issues (`statusCategory != Done`) instead of a board's sprint or filter. With a board set, the active-sprint home is unchanged
 
 ### Fixed
