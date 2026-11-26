@@ -19,6 +19,7 @@ Set FontFamily "JetBrainsMono Nerd Font Mono"
 Set FontSize 13
 Set Width 1280
 Set Height 760
+Set Padding 0
 Set Theme { "name": "Monokai", "background": "#272822", "foreground": "#f8f8f2", "cursor": "#f8f8f0", "selection": "#49483e", "black": "#272822", "red": "#f92672", "green": "#a6e22e", "yellow": "#f4bf75", "blue": "#66d9ef", "magenta": "#ae81ff", "cyan": "#a1efe4", "white": "#f8f8f2", "brightBlack": "#75715e", "brightRed": "#f92672", "brightGreen": "#a6e22e", "brightYellow": "#f4bf75", "brightBlue": "#66d9ef", "brightMagenta": "#ae81ff", "brightCyan": "#a1efe4", "brightWhite": "#f9f8f5" }
 Set TypingSpeed 70ms
 Set PlaybackSpeed 1.0
