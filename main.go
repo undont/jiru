@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
@@ -14,6 +15,7 @@ import (
 	"github.com/undont/jiru/internal/filters"
 	"github.com/undont/jiru/internal/jira"
 	"github.com/undont/jiru/internal/recents"
+	"github.com/undont/jiru/internal/resume"
 	"github.com/undont/jiru/internal/ui"
 	"github.com/undont/jiru/internal/validate"
 )
@@ -26,35 +28,35 @@ var profileFlag string
 func main() {
 	var reset bool
 	var demoMode bool
+	var keyFlag string
 
 	rootCmd := &cobra.Command{
-		Use:     "jiru [issue-key]",
+		Use:     "jiru",
 		Short:   "A terminal UI for Jira",
 		Version: version,
 		// Silence cobra's default error/usage printing — we handle it ourselves.
 		SilenceErrors: true,
 		SilenceUsage:  true,
-		Args:          cobra.MaximumNArgs(1),
-		RunE: func(_ *cobra.Command, args []string) error {
+		Args:          cobra.NoArgs,
+		RunE: func(_ *cobra.Command, _ []string) error {
 			if reset {
 				return runReset()
 			}
 			if demoMode || os.Getenv("JIRU_DEMO") == "1" {
 				return runDemo()
 			}
-			var directIssue string
-			if len(args) > 0 {
-				directIssue = args[0]
-				if err := validate.IssueKey(directIssue); err != nil {
+			if keyFlag != "" {
+				if err := validate.IssueKey(keyFlag); err != nil {
 					return err
 				}
 			}
-			return runTUI(directIssue)
+			return runTUI(keyFlag)
 		},
 	}
 
 	rootCmd.Flags().BoolVarP(&reset, "reset", "r", false, "reset all config and credentials, then start the setup wizard")
 	rootCmd.Flags().BoolVar(&demoMode, "demo", false, "launch the in-memory demo (no real Jira credentials required)")
+	rootCmd.Flags().StringVarP(&keyFlag, "key", "k", "", "open an issue directly")
 	rootCmd.PersistentFlags().StringVarP(&profileFlag, "profile", "p", "", "use a named profile")
 
 	// Register --profile flag completion from profiles.json entries.
@@ -149,10 +151,42 @@ func runTUI(directIssue string) error {
 		app.SetProfileName(config.ActiveProfileName())
 	}
 
+	osc7577 := os.Getenv("OSC7577_TOKEN")
+	_ = os.Unsetenv("OSC7577_TOKEN")
+
 	p := tea.NewProgram(app, tea.WithAltScreen())
+	if osc7577 != "" {
+		_ = resume.Report(osc7577, resumeArgv(os.Args[1:]))
+	}
+
 	_, err := p.Run()
+	// a SIGTERM returns an error and a SIGHUP never gets here, so only a quit clears
+	if err == nil && osc7577 != "" {
+		_ = resume.Clear(osc7577)
+	}
+
 	return err
 }
+
+// resumeArgv is jiru plus the profile and key flags as typed: the terminal
+// compares the reported flags with the command line
+func resumeArgv(args []string) []string {
+	argv := []string{"jiru"}
+	for i := 0; i < len(args); i++ {
+		arg := args[i]
+		if resumeFlags[arg] && i+1 < len(args) {
+			argv = append(argv, arg, args[i+1])
+			i++
+			continue
+		}
+		if strings.HasPrefix(arg, "--profile=") || strings.HasPrefix(arg, "--key=") {
+			argv = append(argv, arg)
+		}
+	}
+	return argv
+}
+
+var resumeFlags = map[string]bool{"-p": true, "--profile": true, "-k": true, "--key": true}
 
 // runDemo launches the app against the in-memory demo client. No real config
 // or credentials are read; saved filters and recents live under a dedicated

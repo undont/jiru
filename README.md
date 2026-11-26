@@ -96,7 +96,7 @@ The board ID is `123`.
 
 ```sh
 jiru                    # Launch the TUI
-jiru PROJ-123           # Open a specific issue directly
+jiru -k PROJ-123        # Open a specific issue directly
 jiru --profile staging  # Use a named profile
 jiru --demo             # Launch the in-memory demo (no real credentials needed)
 jiru --version          # Print version
