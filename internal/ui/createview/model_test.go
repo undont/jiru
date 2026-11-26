@@ -1049,7 +1049,7 @@ func TestScrollOffset_AdjustsForLongLists(t *testing.T) {
 	m, _ = m.Update(projectsLoadedMsg{projects: projects})
 
 	// Move cursor to end.
-	for i := 0; i < 14; i++ {
+	for range 14 {
 		m, _ = m.Update(tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune("j")})
 	}
 
@@ -1430,13 +1430,13 @@ func TestScrollOffset_AdjustsUpward(t *testing.T) {
 	m, _ = m.Update(projectsLoadedMsg{projects: projects})
 
 	// Scroll down to the end.
-	for i := 0; i < 14; i++ {
+	for range 14 {
 		m, _ = m.Update(tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune("j")})
 	}
 	scrolledOffset := m.scrollOffset
 
 	// Now scroll back up to the top.
-	for i := 0; i < 14; i++ {
+	for range 14 {
 		m, _ = m.Update(tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune("k")})
 	}
 
@@ -1532,7 +1532,7 @@ func TestIsCustomFieldStep_Identifies(t *testing.T) {
 func TestIsCustomFieldStep_NoCustomFields(t *testing.T) {
 	m := testModel(defaultStub())
 	// No custom fields loaded — no step should be identified as custom.
-	for step := 0; step < 20; step++ {
+	for step := range 20 {
 		if m.isCustomFieldStep(step) {
 			t.Errorf("isCustomFieldStep(%d) should be false with no custom fields", step)
 		}

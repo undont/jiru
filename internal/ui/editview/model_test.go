@@ -15,14 +15,14 @@ var testIssue = jira.Issue{
 	Priority:    "Medium",
 	Labels:      []string{"backend", "urgent"},
 	IssueType:   "Story",
-	StoryPoints: floatPtr(5.5),
+	StoryPoints: new(5.5),
 	FixVersions: []string{"v1.0", "v1.1"},
 }
 
-func floatPtr(f float64) *float64 { return &f }
-
-var testPriorities = []string{"Highest", "High", "Medium", "Low", "Lowest"}
-var testIssueTypes = []string{"Bug", "Story", "Task", "Sub-task"}
+var (
+	testPriorities = []string{"Highest", "High", "Medium", "Low", "Lowest"}
+	testIssueTypes = []string{"Bug", "Story", "Task", "Sub-task"}
+)
 
 func TestNew_InitialisesWithTextarea(t *testing.T) {
 	m := New("PROJ-1")
@@ -578,7 +578,7 @@ func TestFixVersionsDiff(t *testing.T) {
 	m.SetSize(80, 24)
 
 	jKey := tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune{'j'}}
-	for i := 0; i < 6; i++ {
+	for range 6 {
 		m, _ = m.Update(jKey)
 	}
 

@@ -399,7 +399,7 @@ func TestSetIssue_WrapsParentMetadata(t *testing.T) {
 	})
 
 	content := m.renderContent()
-	for _, line := range strings.Split(content, "\n") {
+	for line := range strings.SplitSeq(content, "\n") {
 		if strings.Contains(line, "Parent:") || strings.Contains(line, "PROJ-1") || strings.Contains(line, "overflowing") {
 			if lipgloss.Width(line) > 60 {
 				t.Fatalf("expected wrapped parent line width <= 60, got %d: %q", lipgloss.Width(line), line)
@@ -1067,7 +1067,7 @@ func TestRenderContent_LinkedIssuesWrap(t *testing.T) {
 	})
 
 	content := m.renderContent()
-	for _, line := range strings.Split(content, "\n") {
+	for line := range strings.SplitSeq(content, "\n") {
 		if strings.Contains(line, "is blocked by") || strings.Contains(line, "PROJ-2") || strings.Contains(line, "wrap cleanly") {
 			if lipgloss.Width(line) > 62 {
 				t.Fatalf("expected wrapped linked issue line width <= 62, got %d: %q", lipgloss.Width(line), line)

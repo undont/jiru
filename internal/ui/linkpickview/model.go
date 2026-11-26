@@ -209,7 +209,7 @@ func (m Model) View() string {
 
 	switch m.step {
 	case stepPickType:
-		var items string
+		var items strings.Builder
 		for i, e := range m.entries {
 			cursor := "  "
 			style := lipgloss.NewStyle()
@@ -217,7 +217,9 @@ func (m Model) View() string {
 				cursor = theme.StyleKey.Render("> ")
 				style = style.Bold(true)
 			}
-			items += cursor + style.Render(e.label) + "\n"
+			items.WriteString(cursor)
+			items.WriteString(style.Render(e.label))
+			items.WriteString("\n")
 		}
 
 		help := theme.StyleHelpKey.Render("j/k") + " " + theme.StyleHelpDesc.Render("navigate") + "  " +
@@ -230,7 +232,7 @@ func (m Model) View() string {
 			title,
 			subtitle,
 			"",
-			items,
+			items.String(),
 			help,
 		)
 		return m.centreBox(content)

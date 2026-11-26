@@ -57,18 +57,12 @@ const cardHeight = 6
 const headerLines = 2
 
 func (c *column) visibleCards() int {
-	vis := (c.height - headerLines) / cardHeight
-	if vis < 1 {
-		vis = 1
-	}
+	vis := max((c.height-headerLines)/cardHeight, 1)
 	return vis
 }
 
 func (c *column) moveHalfPageDown() {
-	jump := c.visibleCards() / 2
-	if jump < 1 {
-		jump = 1
-	}
+	jump := max(c.visibleCards()/2, 1)
 	c.cursor += jump
 	if c.cursor >= len(c.issues) {
 		c.cursor = len(c.issues) - 1
@@ -80,10 +74,7 @@ func (c *column) moveHalfPageDown() {
 }
 
 func (c *column) moveHalfPageUp() {
-	jump := c.visibleCards() / 2
-	if jump < 1 {
-		jump = 1
-	}
+	jump := max(c.visibleCards()/2, 1)
 	c.cursor -= jump
 	if c.cursor < 0 {
 		c.cursor = 0
@@ -110,10 +101,7 @@ func (c *column) setCursor(pos int) {
 		c.offset = 0
 		return
 	}
-	c.cursor = min(pos, len(c.issues)-1)
-	if c.cursor < 0 {
-		c.cursor = 0
-	}
+	c.cursor = max(min(pos, len(c.issues)-1), 0)
 	c.ensureVisible()
 }
 
@@ -148,23 +136,14 @@ func (c column) view(active bool) string {
 	header := headerStyle.Render(fmt.Sprintf("%s (%d)", c.name, len(c.issues)))
 
 	// Card width = column width minus border/padding overhead.
-	cardWidth := c.width - 4
-	if cardWidth < 10 {
-		cardWidth = 10
-	}
+	cardWidth := max(c.width-4, 10)
 
 	// Render visible cards with scrolling.
 	// Use the same constants as visibleCards() for consistency.
-	vis := (c.height - headerLines) / cardHeight
-	if vis < 1 {
-		vis = 1
-	}
+	vis := max((c.height-headerLines)/cardHeight, 1)
 
 	cards := ""
-	end := c.offset + vis
-	if end > len(c.issues) {
-		end = len(c.issues)
-	}
+	end := min(c.offset+vis, len(c.issues))
 
 	for i := c.offset; i < end; i++ {
 		selected := active && i == c.cursor

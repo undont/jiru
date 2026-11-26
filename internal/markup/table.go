@@ -105,9 +105,13 @@ func renderTable(rows []tableRow, width int) string {
 			padded := padOrTruncate(cell, colWidths[i])
 
 			if row.isHeader {
-				b.WriteString(" " + headerStyle.Render(padded) + " │")
+				b.WriteString(" ")
+				b.WriteString(headerStyle.Render(padded))
+				b.WriteString(" │")
 			} else {
-				b.WriteString(" " + padded + " │")
+				b.WriteString(" ")
+				b.WriteString(padded)
+				b.WriteString(" │")
 			}
 		}
 		b.WriteString("\n")
