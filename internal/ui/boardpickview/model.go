@@ -214,7 +214,7 @@ func (m Model) View() string {
 		return m.centreBox(content)
 	}
 
-	var items string
+	var items strings.Builder
 	for i, b := range m.filtered {
 		cursor := "  "
 		style := lipgloss.NewStyle()
@@ -226,7 +226,9 @@ func (m Model) View() string {
 		if b.Type != "" {
 			label += theme.StyleSubtle.Render(fmt.Sprintf("  %s", b.Type))
 		}
-		items += cursor + style.Render(label) + "\n"
+		items.WriteString(cursor)
+		items.WriteString(style.Render(label))
+		items.WriteString("\n")
 	}
 
 	help := theme.StyleHelpKey.Render("j/k") + " " + theme.StyleHelpDesc.Render("navigate") + "  " +
@@ -238,7 +240,7 @@ func (m Model) View() string {
 	if filterLine != "" {
 		parts = append(parts, filterLine)
 	}
-	parts = append(parts, items, help)
+	parts = append(parts, items.String(), help)
 
 	content := lipgloss.JoinVertical(lipgloss.Left, parts...)
 

@@ -48,7 +48,7 @@ func TestAdd_TrimsToMaxEntries(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 	SetProfile("test-trim")
 
-	for i := 0; i < MaxEntries+5; i++ {
+	for i := range MaxEntries + 5 {
 		if err := Add(fmt.Sprintf("%d", i), fmt.Sprintf("Page %d", i), "ENG"); err != nil {
 			t.Fatal(err)
 		}

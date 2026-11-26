@@ -88,10 +88,7 @@ func (m *Model) View() string {
 		Padding(1, 2)
 
 	// Cap the box width.
-	maxWidth := 72
-	if m.width-4 < maxWidth {
-		maxWidth = m.width - 4
-	}
+	maxWidth := min(m.width-4, 72)
 
 	title := lipgloss.NewStyle().
 		Bold(true).
@@ -147,10 +144,7 @@ func (m *Model) build() {
 	content := strings.Join(lines, "\n")
 
 	// Calculate available height for viewport (box padding + title + spacing + footer).
-	vpHeight := m.height - 12
-	if vpHeight < 5 {
-		vpHeight = 5
-	}
+	vpHeight := max(m.height-12, 5)
 
 	maxWidth := min(m.width-4, 72)
 

@@ -3,6 +3,7 @@ package transitionpickview
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
@@ -161,7 +162,7 @@ func (m Model) View() string {
 		return m.centreBox(content)
 	}
 
-	var items string
+	var items strings.Builder
 	for i, t := range m.transitions {
 		cursor := "  "
 		style := lipgloss.NewStyle()
@@ -169,7 +170,9 @@ func (m Model) View() string {
 			cursor = theme.StyleKey.Render("> ")
 			style = style.Bold(true)
 		}
-		items += cursor + style.Render(t.Name) + "\n"
+		items.WriteString(cursor)
+		items.WriteString(style.Render(t.Name))
+		items.WriteString("\n")
 	}
 
 	help := theme.StyleHelpKey.Render("j/k") + " " + theme.StyleHelpDesc.Render("navigate") + "  " +
@@ -178,7 +181,7 @@ func (m Model) View() string {
 
 	content := lipgloss.JoinVertical(lipgloss.Left,
 		title,
-		items,
+		items.String(),
 		help,
 	)
 

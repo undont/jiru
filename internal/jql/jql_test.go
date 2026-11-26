@@ -532,7 +532,7 @@ func TestRenderPopup_DifferentSelectionIndices(t *testing.T) {
 
 	// Verify that rendering with each selection index works without panic
 	// and produces non-empty output containing all labels.
-	for idx := 0; idx < len(items); idx++ {
+	for idx := range items {
 		result := RenderPopup(items, idx)
 		if result == "" {
 			t.Errorf("RenderPopup with selected=%d should produce non-empty output", idx)

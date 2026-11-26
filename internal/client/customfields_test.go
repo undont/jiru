@@ -162,14 +162,14 @@ func TestExtractFixVersions_NilAndAllEmpty(t *testing.T) {
 // --- discoverStoryPointsField via /rest/api/2/field ---
 
 func TestStoryPointsFieldID_DiscoversByName(t *testing.T) {
-	var hits int32
+	var hits atomic.Int32
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.HasSuffix(r.URL.Path, "/field") {
 			t.Errorf("unexpected path %s", r.URL.Path)
 			http.NotFound(w, r)
 			return
 		}
-		atomic.AddInt32(&hits, 1)
+		hits.Add(1)
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`[
 			{"id":"summary","name":"Summary","custom":false},
@@ -186,7 +186,7 @@ func TestStoryPointsFieldID_DiscoversByName(t *testing.T) {
 	// Calling again must not re-hit the endpoint (sync.Once).
 	_ = c.StoryPointsFieldID()
 	_ = c.StoryPointsFieldID()
-	if h := atomic.LoadInt32(&hits); h != 1 {
+	if h := hits.Load(); h != 1 {
 		t.Errorf("/field hit count = %d, want 1 (sync.Once)", h)
 	}
 }

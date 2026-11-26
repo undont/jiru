@@ -2,6 +2,7 @@ package assignpickview
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbles/key"
@@ -182,7 +183,7 @@ func (m Model) View() string {
 		currentLine = theme.StyleSubtle.Render("Currently unassigned")
 	}
 
-	var items string
+	var items strings.Builder
 	for i, opt := range fixedOptions {
 		cursor := "  "
 		style := lipgloss.NewStyle()
@@ -190,11 +191,13 @@ func (m Model) View() string {
 			cursor = theme.StyleKey.Render("> ")
 			style = style.Bold(true)
 		}
-		items += cursor + style.Render(opt.label) + "\n"
+		items.WriteString(cursor)
+		items.WriteString(style.Render(opt.label))
+		items.WriteString("\n")
 	}
 
 	if len(m.users) > 0 {
-		items += "\n"
+		items.WriteString("\n")
 		for i, u := range m.users {
 			idx := i + len(fixedOptions)
 			cursor := "  "
@@ -203,7 +206,9 @@ func (m Model) View() string {
 				cursor = theme.StyleKey.Render("> ")
 				style = style.Bold(true)
 			}
-			items += cursor + style.Render(u.DisplayName) + "\n"
+			items.WriteString(cursor)
+			items.WriteString(style.Render(u.DisplayName))
+			items.WriteString("\n")
 		}
 	}
 
@@ -217,7 +222,7 @@ func (m Model) View() string {
 		"",
 		m.input.View(),
 		"",
-		items,
+		items.String(),
 		help,
 	)
 

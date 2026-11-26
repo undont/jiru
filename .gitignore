@@ -4,7 +4,6 @@ dist/
 
 # Claude Code
 .claude/*
-!.claude/commands/
 
 # macOS
 .DS_Store

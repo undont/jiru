@@ -14,7 +14,7 @@ func WrapStyledText(text string, width int) string {
 	}
 
 	var result strings.Builder
-	for _, line := range strings.Split(text, "\n") {
+	for line := range strings.SplitSeq(text, "\n") {
 		if lipgloss.Width(line) <= width {
 			result.WriteString(line)
 			result.WriteString("\n")

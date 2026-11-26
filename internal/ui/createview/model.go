@@ -841,7 +841,7 @@ func (m Model) createIssue() tea.Cmd {
 		ParentKey:   m.values[stepParent],
 	}
 	if labels := m.values[stepLabels]; labels != "" {
-		for _, l := range strings.Split(labels, ",") {
+		for l := range strings.SplitSeq(labels, ",") {
 			l = strings.TrimSpace(l)
 			if l != "" {
 				req.Labels = append(req.Labels, l)
@@ -1057,10 +1057,7 @@ func (m Model) renderPickerList(cursor, total int, label func(int) string) []str
 
 	maxVisible := m.maxPickerVisible()
 	start := m.scrollOffset
-	end := start + maxVisible
-	if end > total {
-		end = total
-	}
+	end := min(start+maxVisible, total)
 
 	var items []string
 

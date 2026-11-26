@@ -123,7 +123,7 @@ func TestColumnNavigationFirstVisitCarriesCursor(t *testing.T) {
 	m = m.SetIssues(issues, "Board")
 
 	// Move to card 6 (index 5) in "To Do".
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		m, _ = m.Update(tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune("j")})
 	}
 	if m.columns[0].cursor != 5 {
@@ -157,7 +157,7 @@ func TestColumnNavigationReturnVisitRestoresCursor(t *testing.T) {
 	m = m.SetIssues(issues, "Board")
 
 	// Move to card 6 (index 5) in "To Do".
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		m, _ = m.Update(tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune("j")})
 	}
 	if m.columns[0].cursor != 5 {
@@ -826,7 +826,7 @@ func TestMoveHalfPageDown_EnsuresVisibility(t *testing.T) {
 	c.setSize(30, 20) // visibleCards = (20-2)/6 = 3, half = 1.
 
 	// Jump several times to accumulate offset.
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		c.moveHalfPageDown()
 	}
 
@@ -850,7 +850,7 @@ func TestMoveHalfPageUp_EnsuresVisibility(t *testing.T) {
 	c.ensureVisible()
 
 	// Jump up several times.
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		c.moveHalfPageUp()
 	}
 

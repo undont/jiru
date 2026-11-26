@@ -2,6 +2,7 @@ package linkdeleteview
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
@@ -168,7 +169,7 @@ func (m Model) View() string {
 		return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, boxStyle.Render(content))
 	}
 
-	var items string
+	var items strings.Builder
 	for i, l := range m.links {
 		cursor := "  "
 		style := lipgloss.NewStyle()
@@ -184,7 +185,9 @@ func (m Model) View() string {
 		if l.Summary != "" {
 			row += "  " + l.Summary
 		}
-		items += cursor + style.Render(row) + "\n"
+		items.WriteString(cursor)
+		items.WriteString(style.Render(row))
+		items.WriteString("\n")
 	}
 
 	help := theme.StyleHelpKey.Render("j/k") + " " + theme.StyleHelpDesc.Render("navigate") + "  " +
@@ -197,7 +200,7 @@ func (m Model) View() string {
 		title,
 		subtitle,
 		"",
-		items,
+		items.String(),
 		help,
 	)
 	return m.centreBox(content)

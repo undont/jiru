@@ -444,8 +444,8 @@ func parseCodeBlock(lines []string, start int, _ int) (string, int) {
 	trailing := strings.TrimSpace(header[tagLoc[1]:])
 
 	lang := ""
-	if idx := strings.Index(tag, ":"); idx != -1 {
-		lang = strings.TrimSuffix(tag[idx+1:], "}")
+	if _, after, ok := strings.Cut(tag, ":"); ok {
+		lang = strings.TrimSuffix(after, "}")
 	}
 
 	var content []string
@@ -547,8 +547,8 @@ func parsePanelBlock(lines []string, start int, width int) (string, int) {
 	trailing := strings.TrimSpace(header[tagLoc[1]:])
 
 	title := ""
-	if idx := strings.Index(tag, "title="); idx != -1 {
-		rest := tag[idx+6:]
+	if _, after, ok := strings.Cut(tag, "title="); ok {
+		rest := after
 		if pipeIdx := strings.IndexAny(rest, "|}"); pipeIdx != -1 {
 			title = rest[:pipeIdx]
 		}
@@ -611,15 +611,12 @@ func parseQuoteBlock(lines []string, start int, width int) (string, int) {
 		end++
 	}
 
-	contentWidth := width - 2 // Account for "│ " prefix.
-	if contentWidth < 10 {
-		contentWidth = 10
-	}
+	contentWidth := max(width-2, 10) // Account for "│ " prefix.
 
 	var rendered []string
 	for _, line := range content {
 		contentRendered := renderContentLine(line, contentWidth)
-		for _, subLine := range strings.Split(contentRendered, "\n") {
+		for subLine := range strings.SplitSeq(contentRendered, "\n") {
 			rendered = append(rendered, theme.StyleBlockquote.Render("│ "+subLine))
 		}
 	}
@@ -709,7 +706,7 @@ var mermaidKeywords = []string{
 // isMermaidContent checks whether text looks like a mermaid diagram by
 // inspecting the first non-empty line for a known diagram type keyword.
 func isMermaidContent(text string) bool {
-	for _, line := range strings.Split(text, "\n") {
+	for line := range strings.SplitSeq(text, "\n") {
 		trimmed := strings.TrimSpace(line)
 		if trimmed == "" {
 			continue
